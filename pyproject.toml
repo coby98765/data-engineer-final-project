@@ -1,0 +1,28 @@
+[project]
+name = "ravkav-geo"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "streamlit",
+  "pydantic>=2",
+  "pandas",
+  "beautifulsoup4",
+  "lxml",
+  "requests",
+  "pymongo",
+  "elasticsearch>=8",
+  "confluent-kafka",
+  "hdfs",
+  "python-dotenv",
+  "structlog",
+  "folium",
+]
+
+[tool.black]
+line-length = 100
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = E203
