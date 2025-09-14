@@ -1,0 +1,120 @@
+services:
+  # Infra
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment: { ZOOKEEPER_CLIENT_PORT: 2181, ZOOKEEPER_TICK_TIME: 2000 }
+    ports: [ "2181:2181" ]
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on: [ zookeeper ]
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports: [ "9092:9092" ]
+
+  mongo:
+    image: mongo:6
+    ports: [ "27017:27017" ]
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports: [ "9200:9200" ]
+
+  namenode:
+    image: bigdatahub/hadoop-namenode:3.3.6
+    environment:
+      CLUSTER_NAME: "local"
+    ports: [ "9870:9870" ]
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+  datanode:
+    image: bigdatahub/hadoop-datanode:3.3.6
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    ports: [ "9864:9864" ]
+    volumes:
+      - hadoop_datanode:/hadoop/dfs/data
+    depends_on: [ namenode ]
+
+  # API (public)
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/service.Dockerfile
+      args: { SERVICE: api }
+    environment:
+      - ELASTIC_URL=http://elasticsearch:9200
+    depends_on: [ elasticsearch ]
+    ports: [ "8000:8000" ]
+
+  # Streamlit public app
+  app:
+    build:
+      context: ../..
+      dockerfile: infra/docker/service.Dockerfile
+      args: { SERVICE: app }
+    command: ["streamlit","run","src/services/app/app.py","--server.port=8501","--server.address=0.0.0.0"]
+    environment:
+      - API_BASE_URL=http://api:8000
+    depends_on: [ api ]
+    ports: [ "8501:8501" ]
+
+  # Streamlit admin
+  admin:
+    build:
+      context: ../..
+      dockerfile: infra/docker/service.Dockerfile
+      args: { SERVICE: admin }
+    command: ["streamlit","run","src/services/admin/app.py","--server.port=8502","--server.address=0.0.0.0"]
+    depends_on: [ api ]
+    ports: [ "8502:8502" ]
+
+  # Skeleton service containers (expose 800x)
+  scraper:
+    build:
+      context: ../..
+      dockerfile: infra/docker/service.Dockerfile
+      args: { SERVICE: scraper }
+    command: ["uvicorn","src.services.scraper.app:app","--host","0.0.0.0","--port","8001"]
+    ports: [ "8001:8001" ]
+
+  parser:
+    build:
+      context: ../..
+      dockerfile: infra/docker/service.Dockerfile
+      args: { SERVICE: parser }
+    command: ["uvicorn","src.services.parser.app:app","--host","0.0.0.0","--port","8002"]
+    ports: [ "8002:8002" ]
+
+  expander:
+    build:
+      context: ../..
+      dockerfile: infra/docker/service.Dockerfile
+    args: { SERVICE: expander }
+    command: ["uvicorn","src.services.expander.app:app","--host","0.0.0.0","--port","8003"]
+    ports: [ "8003:8003" ]
+
+  geocoder:
+    build:
+      context: ../..
+      dockerfile: infra/docker/service.Dockerfile
+      args: { SERVICE: geocoder }
+    command: ["uvicorn","src.services.geocoder.app:app","--host","0.0.0.0","--port","8004"]
+    ports: [ "8004:8004" ]
+
+  indexer:
+    build:
+      context: ../..
+      dockerfile: infra/docker/service.Dockerfile
+      args: { SERVICE: indexer }
+    command: ["uvicorn","src.services.indexer.app:app","--host","0.0.0.0","--port","8005"]
+    ports: [ "8005:8005" ]
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode:
