@@ -1,5 +1,5 @@
 from html_fetcher.html_fetcher import HtmlFetcher
-from src.shared.dal.mongo import MongoDAL
+from src.shared.dal.mongo2 import MongoDAL
 from  src.shared.dal.kafka import Kafka
 from src.shared.dal.kafka import Kafka
 from src.shared.logging.logger import Logger
@@ -10,7 +10,7 @@ class Manager:
         self.url ="https://ravkavonline.co.il/he/ravkav-geographic/eligible-localities"
         self.html =None
         self.mongo = None
-        self.pub = None
+        self.kafka = None
         self.id = None
         self.logger = Logger.get_logger()
 
@@ -27,7 +27,8 @@ class Manager:
 
     def get_kafka_connection(self):
         try:
-            self.pub = Kafka("scraper_servic")
+            self.kafka = Kafka("scraper_servic")
+            self.kafka.create_producer()
             self.logger.info("kafka connection successfully")
         except Exception as e:
             self.logger.error(f"kafka connection failed {e}")
@@ -44,13 +45,14 @@ class Manager:
         self.logger.info("id inserted successfully")
 
     def send_to_kafka(self):
-        self.pub.pub(self.id,"topic-to-parser")
+        self.kafka.pub(self.id,"topic-to-parser")
         self.logger.info("topic-to-parser sent successfully")
 
 
 
     def setup(self):
         self.get_kafka_connection()
+
         self.get_mongo_connection()
 
 #for
@@ -59,3 +61,7 @@ class Manager:
         self.save_html_to_file()
         self.seve_in_mongo_and_get_id()
         self.send_to_kafka()
+
+a=Manager()
+a.setup()
+a.run()
