@@ -13,7 +13,7 @@ class Manager:
         self.pub = None
         self.id = None
         self.logger = Logger.get_logger()
-
+        self.path=None
 
 
     def get_html(self):
@@ -22,6 +22,7 @@ class Manager:
 
     def save_html_to_file(self):
         self.fetcher.save_html_to_file(self.html)
+        self.path = "tmp\data_html"
         self.logger.info("html saved in file successfully")
 
 
@@ -39,8 +40,8 @@ class Manager:
         except Exception as e:
             self.logger.error(f"mongo connection failed {e}")
 
-    def seve_in_mongo_and_get_id(self):
-        self.id = self.mongo.insert_file(self.html)
+    def save_in_mongo_and_get_id(self):
+        self.id = self.mongo.insert_file(self.path)
         self.logger.info("id inserted successfully")
 
     def send_to_kafka(self):
@@ -53,9 +54,10 @@ class Manager:
         self.get_kafka_connection()
         self.get_mongo_connection()
 
-#for
+
     def run(self):
         self.get_html()
         self.save_html_to_file()
-        self.seve_in_mongo_and_get_id()
+        self.save_in_mongo_and_get_id()
         self.send_to_kafka()
+
