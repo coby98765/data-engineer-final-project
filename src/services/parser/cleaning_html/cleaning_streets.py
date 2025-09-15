@@ -22,7 +22,7 @@ class Cleaning_streets:
         elif status_streets == "🔴":
             return "no"
         else:
-            return "bisected"
+            return "partial"
 
 
     @staticmethod

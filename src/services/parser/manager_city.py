@@ -2,16 +2,18 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
 
-from src.services.parser.cleaning_html.cleaning_city import Cleaning_city
-from dal.kafka import Kafka
+from city_parser import CityParser
+from src.shared.dal.kafka import Kafka
+from src.shared.dal.mongo2 import MongoDAL
+
 
 load_dotenv()
 
 class Manager:
 
     def run(self):
-        for i in self.kafka.sub():
-            html = i
+        for consumer in self.kafka.sub():
+            html = self.get_from_mongo_by_id(consumer["_id"])
             self.start_city(html)
 
 
@@ -19,50 +21,32 @@ class Manager:
         self.kafka = Kafka("parser-service")
         self.kafka.create_producer()
         self.kafka.create_consumer(os.getenv("topic-to-parser", "topic-to-parser"))
-
-    @staticmethod
-    def create_dict_of_city(city):
-        name_city = Cleaning_city.get_name_city(city)
-        status_city = Cleaning_city.get_status_city(city)
-        city_dict = {
-            "city": name_city,
-            "status": status_city,
-        }
-        return city_dict
+        self.mongodb = MongoDAL()
+        self.parser = CityParser()
 
 
-    @staticmethod
-    def check_if_partial(city_dict):
-        return "זכאי באופן חלקי" in city_dict['status']
+    def start_city(self, html):
+        all_city = self.parser.parse(html)
+        for row in all_city:
+            if row["status"] == "partial":
+                self.send_link_to_kafka(row.pop("link"))
 
 
     def send_link_to_kafka(self, link):
         self.kafka.pub(link, os.getenv("topic-to-scraper", "topic-to-scraper"))
 
+    def saving_in_mongodb(self, doc):
+        collection = os.getenv("collection-to-doc-city")
+        id = self.mongodb.insert_document(collection, doc)
+        self.send_id_mongo_to_geo(id)
 
-    @staticmethod
-    def get_link_for_city(city):
-        link = Cleaning_city.get_link(city)
-        return link
+    def send_id_mongo_to_geo(self, link):
+        self.kafka.producer(link, os.getenv("topic-to-geo", "topic-to-geo"))
 
 
-    def start_city(self, html):
-        #get data from kafka
-        soup = BeautifulSoup(html, "html.parser")
-        #get table from html
-        table = soup.find("table", {"class": "table table-bordered table-hover"})
-
-        all_city = []
-
-        for city in table.find("tbody").find_all("tr"):
-            city_dict = self.create_dict_of_city(city)
-            if self.check_if_partial(city_dict):
-                link = self.get_link_for_city(city)
-                self.send_link_to_kafka(link)
-            all_city.append(city_dict)
-
-        print(all_city)
-
+    def get_from_mongo_by_id(self, _id):
+        city = self.mongodb.get_file(_id, f"tmp/{id}.html")
+        return city
 
 
 a = Manager()

@@ -9,7 +9,7 @@ class Cleaning_city:
         elif status_city == "לא זכאי":
             return "no"
         else:
-            return "bisected"
+            return "partial"
 
     @staticmethod
     def get_name_city(city):

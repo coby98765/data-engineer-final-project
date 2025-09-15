@@ -39,7 +39,7 @@ class Cleaning_buildings:
         elif status_streets == "🔴":
             return "no"
         else:
-            return "bisected"
+            return "partial"
 
     @staticmethod
     def get_link(city):
