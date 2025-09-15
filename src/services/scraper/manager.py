@@ -5,9 +5,9 @@ from src.shared.dal.kafka import Kafka
 from src.shared.logging.logger import Logger
 
 class Manager:
-    def __init__(self):
+    def __init__(self,url = "https://ravkavonline.co.il/he/ravkav-geographic/eligible-localities"):
         self.fetcher = HtmlFetcher()
-        self.url ="https://ravkavonline.co.il/he/ravkav-geographic/eligible-localities"
+        self.url = url
         self.html =None
         self.mongo = None
         self.kafka = None
@@ -62,6 +62,3 @@ class Manager:
         self.seve_in_mongo_and_get_id()
         self.send_to_kafka()
 
-a=Manager()
-a.setup()
-a.run()
