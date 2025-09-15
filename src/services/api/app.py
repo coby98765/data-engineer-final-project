@@ -1,23 +1,49 @@
-from fastapi import FastAPI, Query
-from typing import Optional
-from src.shared.dal.elastic import get_es
+from fastapi import FastAPI
+from threading import Thread
+import subprocess
 
-app = FastAPI(title="Public API")
 
-@app.get("/healthz")
-def healthz():
-    return {"ok": True}
+from src.services.parser.manager_city import Manager
 
-@app.get("/search")
-def search(locality: str, street: str, house: Optional[int] = Query(None)):
-    es = get_es()
-    must = [{"term":{"locality.keyword": locality}}, {"term":{"street.keyword": street}}]
-    if house is not None:
-        must.append({"term":{"house_number": house}})
-    body = {"query":{"bool":{"must": must}}, "size": 1}
-    res = es.search(index="eligibility_v1", body=body)
-    hits = res.get("hits",{}).get("hits",[])
-    if not hits:
-        return {"found": False}
-    doc = hits[0]["_source"]
-    return {"found": True, "eligible": doc.get("eligible"), "lat": doc.get("lat"), "lon": doc.get("lon")}
+app = FastAPI()
+
+manager = None
+thread = None
+status = "stopped"
+
+
+@app.post("/setup")
+def setup():
+    global manager, status
+    manager = Manager()
+    manager.setup()
+    status = "initialized"
+    return {"status": status}
+
+
+@app.post("/run")
+def run():
+    global thread, status
+    #
+    def run_manager():
+        global status
+        status = "running"
+        manager.run()
+        status = "stopped"
+    #
+    thread = Thread(target=run_manager, daemon=True)
+    thread.start()
+    return {"status": "running"}
+
+
+@app.get("/status")
+def get_status():
+    return {"status": status}
+
+
+@app.post("/stop")
+def stop():
+    global status, manager
+    manager.kafka.sub().close()
+    status = "stopped"
+    return {"status": status}

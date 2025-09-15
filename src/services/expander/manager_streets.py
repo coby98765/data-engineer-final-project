@@ -34,7 +34,7 @@ class Manager:
         list_of_buildings = []
         for street in all_streets:
             if street["status"] == "partial":
-                list_of_buildings.append(self.manager_buildings.start_city(street, street["city"]))
+                list_of_buildings.append(self.manager_buildings.start_building(street, street["city"]))
         self.saving_in_mongodb(all_streets)
 
 

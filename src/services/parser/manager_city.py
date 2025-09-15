@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
 
-from city_parser import CityParser
+from src.services.parser.city_parser import CityParser
 from src.shared.dal.kafka import Kafka
 from src.shared.dal.mongo2 import MongoDAL
 
@@ -56,8 +56,3 @@ class Manager:
             os.makedirs(folder_path)
         city = self.mongodb.get_file(_id, f"{folder_path}/data.html")
         return city
-
-
-a = Manager()
-a.setup()
-a.run()
