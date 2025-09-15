@@ -1,4 +1,4 @@
-from ..config import get_settings
+# from ..config import get_settings
 
 from src.shared.logging.logger import Logger
 from pymongo import MongoClient ,errors
