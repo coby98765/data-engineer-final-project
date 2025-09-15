@@ -20,7 +20,7 @@ class Manager:
     def setup(self):
         self.kafka = Kafka("parser-service")
         self.kafka.create_producer()
-        self.kafka.create_consumer(os.getenv("topic-to-parser", "topic-to-parser"))
+        self.kafka.create_consumer(os.getenv("TOPIC_TO_PARSER", "topic-to-parser"))
         self.mongodb = MongoDAL()
         self.parser = CityParser()
 
@@ -34,7 +34,7 @@ class Manager:
 
 
     def send_link_to_kafka(self, link):
-        self.kafka.pub(link, os.getenv("topic-to-streets", "topic-to-streets"))
+        self.kafka.pub(link, os.getenv("TOPIC_TO_STREETS", "topic-to-streets"))
 
     def saving_in_mongodb(self, doc):
         collection = os.getenv("collection-to-doc-city")
@@ -42,7 +42,7 @@ class Manager:
         self.send_id_mongo_to_geo(id)
 
     def send_id_mongo_to_geo(self, link):
-        self.kafka.producer(link, os.getenv("topic-to-geo-city", "topic-to-geo-city"))
+        self.kafka.producer(link, os.getenv("TOPIC_TO_GEO_CITY", "topic-to-geo-city"))
 
 
     def get_from_mongo_by_id(self, _id):

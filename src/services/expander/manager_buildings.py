@@ -15,7 +15,7 @@ class Manager_buildings:
     def setup(self):
         self.kafka = Kafka("parser-service")
         self.kafka.create_producer()
-        self.kafka.create_consumer(os.getenv("topic-to-parser-streets", "topic-to-parser-streets"))
+        self.kafka.create_consumer(os.getenv("TOPIC_TO_PARSER_STREETS", "topic-to-parser-streets"))
         self.mongodb = MongoDAL()
 
 
@@ -30,7 +30,7 @@ class Manager_buildings:
         self.send_id_mongo_to_geo(id)
 
     def send_id_mongo_to_geo(self, link):
-        self.kafka.producer(link, os.getenv("topic-to-geo-building", "topic-to-geo-building"))
+        self.kafka.producer(link, os.getenv("TOPIC_TO_GEO_BUILDING", "topic-to-geo-building"))
 
 
     def get_from_mongo_by_id(self, _id):
