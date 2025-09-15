@@ -49,12 +49,12 @@ class Manager:
 
 
 
-    def set_up_scraping(self):
+    def setup(self):
         self.get_kafka_connection()
         self.get_mongo_connection()
 
 
-    def run_scraping(self):
+    def run(self):
         self.get_html()
         self.save_html_to_file()
         self.seve_in_mongo_and_get_id()
