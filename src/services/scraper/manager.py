@@ -41,7 +41,7 @@ class Manager:
             self.logger.error(f"mongo connection failed {e}")
 
     def save_in_mongo_and_get_id(self):
-        self.id = self.mongo.insert_file(self.path)
+        self.id = self.mongo.insert_file(self.html)
         self.logger.info("id inserted successfully")
 
     def send_to_kafka(self):
@@ -61,3 +61,6 @@ class Manager:
         self.save_in_mongo_and_get_id()
         self.send_to_kafka()
 
+a = Manager()
+a.setup()
+a.run()

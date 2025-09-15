@@ -124,7 +124,7 @@
     method="post"
     id="language-picker"
     class="language-picker">
-    <input type="hidden" name="csrfmiddlewaretoken" value="qBUYypkaGCZGD69NoYrstgwwVoyz9NsIkByAd1Vfc5SYfNqGQfvkdFHd6HOoNLXC">
+    <input type="hidden" name="csrfmiddlewaretoken" value="MAEVNLxrB4gJVmUbqvQ9wXAmuxrMdOFgrBH9Ok2vRpfZsPcwrfpCyhsaQDrPurg1">
     <input name="next" type="hidden" value="/ravkav-geographic/eligible-localities">
 
     <label for="language">
