@@ -13,7 +13,8 @@ class Manager:
 
     def run(self):
         for consumer in self.kafka.sub():
-            html = self.get_from_mongo_by_id(consumer["_id"])
+            self.get_from_mongo_by_id(consumer)
+            html = self.read_files("tmp/data.html")
             self.start_city(html)
 
 
@@ -25,24 +26,28 @@ class Manager:
         self.parser = CityParser()
 
 
+    def read_files(self, path):
+        with open(path, "r",  encoding="utf-8") as file:
+            file = file.read()
+        return file
+
     def start_city(self, html):
         all_city = self.parser.parse(html)
         for row in all_city:
             if row["status"] == "partial":
                 self.send_link_to_kafka(row.pop("link"))
-        self.saving_in_mongodb(all_city)
+            else:
+                row.pop("link")
+        docs = {"city" : all_city}
+        self.send_city_to_geo(docs)
 
 
     def send_link_to_kafka(self, link):
         self.kafka.pub(link, os.getenv("topic-to-streets", "topic-to-streets"))
 
-    def saving_in_mongodb(self, doc):
-        collection = os.getenv("collection-to-doc-city")
-        id = self.mongodb.insert_document(collection, doc)
-        self.send_id_mongo_to_geo(id)
 
-    def send_id_mongo_to_geo(self, link):
-        self.kafka.producer(link, os.getenv("topic-to-geo-city", "topic-to-geo-city"))
+    def send_city_to_geo(self, docs):
+        self.kafka.pub(docs, os.getenv("topic-to-geo-city", "topic-to-geo-city"))
 
 
     def get_from_mongo_by_id(self, _id):

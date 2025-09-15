@@ -49,9 +49,9 @@ class MongoDAL:
         Returns the inserted document id.
         """
         try:
-            result = self.db[collection].insert_one(data)
-            logger.info("Document inserted successfully. ID=%s", result.inserted_id)
-            return str(result.inserted_id)
+            result = self.db[collection].insert_many(data)
+            logger.info("Document inserted successfully. ID=%s", result)
+            return str(result)
         except errors.PyMongoError as e:
             logger.error("Error inserting document: %s", e)
             return ""
