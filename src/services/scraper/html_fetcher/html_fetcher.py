@@ -15,5 +15,5 @@ class HtmlFetcher:
             return None
 
     def save_html_to_file(self, html_content):
-        with open("tmp/data_html", "w", encoding="utf-8") as file:
+        with open("tmp/data.html", "w", encoding="utf-8") as file:
             file.write(html_content)

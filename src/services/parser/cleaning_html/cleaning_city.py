@@ -18,5 +18,8 @@ class Cleaning_city:
 
     @staticmethod
     def get_link(city):
-        link_city = city.find("a").get("href")
-        return link_city
+        try:
+            link_city = city.find("a").get("href")
+            return link_city
+        except:
+            return ""

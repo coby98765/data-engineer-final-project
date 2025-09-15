@@ -37,5 +37,5 @@ class Manager_buildings:
         folder_path = "tmp"
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-        city = self.mongodb.get_file(_id, f"{folder_path}/{id}.html")
+        city = self.mongodb.get_file(_id, f"{folder_path}/data.html")
         return city
