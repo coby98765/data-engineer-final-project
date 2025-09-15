@@ -59,3 +59,5 @@ class Kafka:
         finally:
             self.consumer.close()
             logger.info('Kafka.sub, consumer closed.')
+
+
