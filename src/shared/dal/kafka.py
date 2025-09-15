@@ -1,4 +1,5 @@
-from kafka import KafkaProducer,KafkaConsumer
+from kafka import KafkaProducer, KafkaConsumer
+
 from src.shared.logging.logger import Logger
 import os
 import json
