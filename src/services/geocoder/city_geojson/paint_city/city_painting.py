@@ -8,6 +8,7 @@ class PaintCity:
         self.COLOR_MAP = os.getenv("COLOR_MAP",{"yes":"green","no":"red","partial":"orange"})
     def painting(self,city_name,city_status):
         gdf = ox.geocode_to_gdf(city_name)
+        print(gdf)
         if gdf.empty:
             print(f"No information about {city_name}")
         else:
