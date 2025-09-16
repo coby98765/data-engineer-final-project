@@ -208,3 +208,4 @@ __marimo__/
 /src/services/parser/tmp/
 /src/services/scraper/tmp/
 /src/services/expander/tmp/
+/src/services/geocoder/building_geojson/cache/
