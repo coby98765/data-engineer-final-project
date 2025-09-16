@@ -74,3 +74,25 @@ class MongoDAL:
         except errors.PyMongoError as e:
             logger.error("Error retrieving document (ID=%s): %s", doc_id, e)
             return {}
+
+
+    def get_all_document(self, collection: str, id_list: list) -> list:
+        """
+        Retrieve a simple document from a collection by id.
+        Returns the document or {} if not found.
+        """
+        try:
+            object_ids = [ObjectId(id_str) for id_str in id_list]
+
+            documents = self.db[collection].find({"_id": {"$in": object_ids}})
+            docs_list = list(documents)
+            if docs_list:
+                logger.info("Document retrieved successfully. ID=%s", docs_list)
+                return docs_list
+            else:
+                logger.warning("Document not found. ID=%s", docs_list)
+                return []
+        except errors.PyMongoError as e:
+            logger.error("Error retrieving document (ID=%s): %s", e)
+            return []
+
