@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
 
-from streets_building import building_Parser
+from src.services.expander.streets_building import building_Parser
 from src.shared.dal.kafka import Kafka
 from src.shared.dal.mongo2 import MongoDAL
 
@@ -27,8 +27,9 @@ class Manager_buildings:
 
     def saving_in_mongodb(self, doc):
         collection = os.getenv("collection-to-doc-building", "collection-to-doc-building")
-        _id = self.mongodb.insert_document(collection, doc)
-        self.send_id_mongo_to_geo(_id)
+        list_id = self.mongodb.insert_document(collection, doc)
+        docs = {"buildings" : list_id}
+        self.send_id_mongo_to_geo(docs)
 
     def send_id_mongo_to_geo(self, link):
         self.kafka.pub(link, os.getenv("topic-to-geo-building", "topic-to-geo-building"))
