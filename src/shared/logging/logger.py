@@ -1,6 +1,7 @@
 import logging
 from elasticsearch import Elasticsearch
 from datetime import datetime,timezone
+from src.shared.config.settings import settings
 import os
 
 class Logger:
@@ -10,7 +11,7 @@ class Logger:
     def get_logger(
             cls,
             name="your_logger_name",
-            es_host=os.getenv("ES_HOST", "http://localhost:9200"),
+            es_host=settings.ELASTIC_URL,
             index="logs",
             level=logging.DEBUG
     ):

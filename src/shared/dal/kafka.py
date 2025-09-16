@@ -1,15 +1,17 @@
 from kafka import KafkaProducer, KafkaConsumer
-
 from src.shared.logging.logger import Logger
+
 import os
 import json
+from src.shared.config.settings import settings
 
 # logger setup
 logger = Logger.get_logger(index="kafka_log",name="kafka_connection")
 
 class Kafka:
     def __init__(self,group_id):
-        self.bootstrap_servers = os.getenv("KAFKA_HOST","localhost:9092")
+        # self.bootstrap_servers = os.getenv("KAFKA_HOST","localhost:9092")
+        self.bootstrap_servers = settings.KAFKA_BOOTSTRAP
         self.group_id = group_id
         self.producer = None
         self.consumer = None

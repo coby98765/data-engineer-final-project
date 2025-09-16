@@ -1,8 +1,8 @@
 from elasticsearch import Elasticsearch
-from ..config import get_settings
 
 from elasticsearch import Elasticsearch, helpers
 from src.utils.logger import Logger
+from src.shared.config.settings import settings
 import os
 
 # logger setup
@@ -10,13 +10,14 @@ logger = Logger.get_logger(index="persister_log",name="persister.elasticDAL.py")
 
 class ElasticDAL:
     def __init__(self,index_name="podcasts"):
-        HOST = os.getenv("ES_HOST", "http://localhost:9200")
+        # HOST = os.getenv("ES_HOST", "http://localhost:9200")
+        self.es_host = settings.ELASTIC_URL
         self.index_name = index_name
         self.request_timeout = 20
         self.verify_certs = True
         try:
             self.es = Elasticsearch(
-                hosts=HOST,
+                hosts=self.es_host,
                 request_timeout=self.request_timeout,
                 verify_certs=self.verify_certs
             )

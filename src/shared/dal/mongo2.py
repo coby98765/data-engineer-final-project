@@ -2,6 +2,7 @@ from src.shared.logging.logger import Logger
 from pymongo import MongoClient, errors
 from bson import ObjectId
 import gridfs
+from src.shared.config.settings import settings
 
 
 
@@ -11,7 +12,7 @@ logger = Logger.get_logger(index="persister_log",name="persister.mongoDAL.py")
 
 
 class MongoDAL:
-    def __init__(self, uri="mongodb://localhost:27017", db_name="files_db"):
+    def __init__(self, uri=settings.MONGO_URI, db_name="files_db"):
         try:
             self.client = MongoClient(uri)
             self.db = self.client[db_name]

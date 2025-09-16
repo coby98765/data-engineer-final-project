@@ -1,12 +1,23 @@
 import os, requests, streamlit as st
+from src.shared.config.settings import settings
+
+# SERVICES = {
+#     "scraper": os.getenv("SCRAPER_URL","http://scraper:8000"),
+#     "parser":  os.getenv("PARSER_URL","http://parser:8000"),
+#     "expander":os.getenv("EXPANDER_URL","http://expander:8000"),
+#     "geocoder":os.getenv("GEOCODER_URL","http://geocoder:8000"),
+#     "indexer": os.getenv("INDEXER_URL","http://indexer:8000"),
+# }
 
 SERVICES = {
-    "scraper": os.getenv("SCRAPER_URL","http://scraper:8000"),
-    "parser":  os.getenv("PARSER_URL","http://parser:8000"),
-    "expander":os.getenv("EXPANDER_URL","http://expander:8000"),
-    "geocoder":os.getenv("GEOCODER_URL","http://geocoder:8000"),
-    "indexer": os.getenv("INDEXER_URL","http://indexer:8000"),
+    "scraper": settings.SCRAPER_URL,
+    "parser": settings.PARSER_URL,
+    "expander": settings.EXPANDER_URL,
+    "geocoder": settings.GEOCODER_URL,
+    "indexer": settings.INDEXER_URL,
 }
+
+print(SERVICES)
 
 st.set_page_config(page_title="Admin", layout="wide")
 st.title("Pipeline Admin")
