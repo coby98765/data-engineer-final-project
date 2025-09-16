@@ -16,10 +16,7 @@ class CitiesGeojson:
             "type": "FeatureCollection",
             "features": features
         }
-        filename = "cities_colored.geojson"
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(geojson_data, f, ensure_ascii=False, indent=2)
-        # TODO insert to mongoDB
+        return geojson_data
 
 o1 = CitiesGeojson()
 bu = [{'city': 'אודים', 'status': 'yes'}, {'city': 'תל אביב', 'status': 'no'}, {'city': 'אוהד', 'status': 'partial'},{'city': 'אודם', 'status': 'no'}]
