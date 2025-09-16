@@ -20,7 +20,7 @@ class StreetsGeojson:
                 pd.concat([all_buildings, feature], ignore_index=True)
             )
         geojson_dict = json.loads(all_buildings.to_json())
-        filename = "cities_colored.geojson"
+        filename = "building_colored.geojson"
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(geojson_dict, f, ensure_ascii=False, indent=2)
         # TODO insert to mongoDB
