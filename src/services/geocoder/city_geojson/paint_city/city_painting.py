@@ -33,14 +33,15 @@ class PaintCity:
                             "geometry": gdf.loc[0, "geometry"].__geo_interface__
                         }
                         features.append(feature)
-                    # Geojson creating.
-                    geojson_data = {
-                        "type": "FeatureCollection",
-                        "features": features
-                    }
-                    return geojson_data
                 except Exception as e:
-                    print(e)
+                    print(1,e)
                     continue
+
+            # Geojson creating.
+            geojson_data = {
+                "type": "FeatureCollection",
+                "features": features
+            }
+            return geojson_data
         except Exception as e:
-            print(e)
+            print(2,e)

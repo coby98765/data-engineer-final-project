@@ -11,13 +11,6 @@ class PaintBuilding:
         all_buildings = gpd.GeoDataFrame()
         nearest_building = None
         for building in buildings:
-            # feature = self.paint_city.painting(
-            #     building["city"],
-            #     building["street"],
-            #     building["building"],
-            #     building["status"]
-            # )
-
             address_input = f"{building["city"]},{building["building"]} {building["street"]}"
             lat , lon = ox.geocode(address_input)  # מחזיר (lat, lon)
             point = Point(lon, lat)
@@ -26,7 +19,7 @@ class PaintBuilding:
             buildings = ox.features.features_from_point((lat,lon), tags=tags, dist=50) # רדיוס 50 מטר
             if buildings.empty:
                 print(f"No building found near {address_input}")
-                continue  # מחזיר ריק
+                continue
 
                 # --- 3. מציאת הבניין הקרוב ביותר לנקודה ---
             buildings = buildings.to_crs(epsg=3857)

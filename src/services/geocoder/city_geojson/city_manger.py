@@ -13,7 +13,7 @@ class CitiesGeojson:
                 print(cities_doc)
                 geojson_data = self.paint_city.painting(cities_doc)
                 print("g             ",geojson_data)
-                mongo.insert_document("collection-city-geojson",geojson_data)
+                #mongo.insert_one_document("collection-city-geojson",geojson_data)
                 filename = "cities_colored.geojson"
                 with open(filename, "w", encoding="utf-8") as f:
                     json.dump(geojson_data, f, ensure_ascii=False, indent=2)

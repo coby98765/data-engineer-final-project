@@ -9,9 +9,8 @@ class PaintStreet:
         self.COLOR_MAP = os.getenv("COLOR_MAP",{"yes":"green","no":"red","partial":"orange"})
     def painting(self,streets_in_cities):
         all_streets = gpd.GeoDataFrame()
-
-        for city in streets_in_cities:
-            city_name = list(city.keys())[0]
+        print(streets_in_cities)
+        for city_name in streets_in_cities:
             streets_list = city[city_name]
             print(streets_list)
             print(city_name)

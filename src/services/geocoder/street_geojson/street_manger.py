@@ -10,9 +10,11 @@ class StreetsGeojson:
 
     def manage_all_streets(self,kafka_sub,mongo):
         for street_msg in kafka_sub:
-            streets_doc = mongo.get_streets_by_city("collection-to-doc-street", street_msg["streets"])
+            print(street_msg["streets"])
+            streets_doc = mongo.get_documents_grouped_by_city("collection-to-doc-streets", street_msg["streets"])
+            print(streets_doc)
+            all_streets = self.paint_street.painting(dict(streets_doc))
 
-            all_streets = self.paint_street.painting(streets_doc)
             mongo.insert_document("collection-street-geojson",all_streets)
             filename = "streets_colored.geojson"
             with open(filename, "w", encoding="utf-8") as f:
