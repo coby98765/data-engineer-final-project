@@ -6,14 +6,11 @@ from src.services.geocoder.street_geojson.paint_street.street_painting import Pa
 
 class StreetsGeojson:
     def __init__(self):
-        self.paint_city = PaintStreet()
+        self.paint_street = PaintStreet()
 
     def manage_all_streets(self,cities_streets):
-        all_streets = self.paint_city.painting(cities_streets)
-        filename = "streets_colored.geojson"
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(all_streets, f, ensure_ascii=False, indent=2)
-        # TODO insert to mongoDB
+        all_streets = self.paint_street.painting(cities_streets)
+        return all_streets
 
 o1 = StreetsGeojson()
 bu = [{"אור יהודה":[{'street': 'אבי ואביב', 'status': 'yes'}, {'street': 'אבנר', 'city': 'אור יהודה', 'status': 'yes'}, {'street': 'שדרות מנחם בגין', 'city': 'אור יהודה','status':'no'}]}]
