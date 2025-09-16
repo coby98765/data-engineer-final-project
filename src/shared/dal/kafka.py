@@ -1,4 +1,5 @@
-from kafka import KafkaProducer,KafkaConsumer
+from kafka import KafkaProducer, KafkaConsumer
+
 from src.shared.logging.logger import Logger
 import os
 import json
@@ -58,3 +59,5 @@ class Kafka:
         finally:
             self.consumer.close()
             logger.info('Kafka.sub, consumer closed.')
+
+
