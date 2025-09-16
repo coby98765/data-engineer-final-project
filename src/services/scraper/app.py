@@ -1,4 +1,4 @@
-from src.shared.api_template import build_service_app
-from .service import run_once
+from src.services.scraper.manager import Manager
+from src.services.api.app import api
 
-app = build_service_app(service_name="scraper", run_once=run_once)
+app = api(Manager, "manager scraper")

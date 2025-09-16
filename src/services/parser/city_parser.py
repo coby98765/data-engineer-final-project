@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from cleaning_html.cleaning_city import Cleaning_city
+from src.services.parser.cleaning_html.cleaning_city import Cleaning_city
 
 class CityParser:
 

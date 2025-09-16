@@ -1,4 +1,4 @@
-from html_fetcher.html_fetcher import HtmlFetcher
+from src.services.scraper.html_fetcher.html_fetcher import HtmlFetcher
 from src.shared.dal.mongo2 import MongoDAL
 from  src.shared.dal.kafka import Kafka
 from src.shared.dal.kafka import Kafka
@@ -54,13 +54,9 @@ class Manager:
         self.get_kafka_connection()
         self.get_mongo_connection()
 
-#for
+
     def run(self):
         self.get_html()
         self.save_html_to_file()
         self.save_in_mongo_and_get_id()
         self.send_to_kafka()
-
-a = Manager()
-a.setup()
-a.run()
