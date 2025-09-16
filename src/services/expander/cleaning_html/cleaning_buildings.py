@@ -21,15 +21,17 @@ class Cleaning_buildings:
 
     @staticmethod
     def get_str_buildings_no(street):
-        index_yes = street.text.index("מספרי בתים זכאים:")
         index_no = street.text.index("מספרי בתים שאינם זכאים:")
         str_building_no = street.text[index_no + len("מספרי בתים שאינם זכאים:"):].strip()
         return str_building_no
 
     @staticmethod
     def convert_str_to_list(street):
-        building_list = [int(x.strip().replace('.', '')) for x in street.split(",")]
-        return building_list
+        try:
+            building_list = [int(x.strip().replace('.', '')) for x in street.split(",")]
+            return building_list
+        except:
+            return None
 
     @staticmethod
     def get_status_streets(street):

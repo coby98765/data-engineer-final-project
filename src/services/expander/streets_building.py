@@ -11,12 +11,20 @@ class building_Parser:
         street_yes_list = Cleaning_buildings.convert_str_to_list(street_str_yes)
         street_no_list = Cleaning_buildings.convert_str_to_list(street_str_no)
 
+        if not street_yes_list:
+            print(street)
+            print(name_city)
+            return None
+
         for building in street_yes_list:
             building_dict = building_Parser.create_dict_of_streets(street, name_city)
             building_dict['building'] = building
             building_dict["status"] = "yes"
             list_status_streets.append(building_dict)
-
+        if not street_no_list:
+            print(street)
+            print(name_city)
+            return None
         for building in street_no_list:
             building_dict = building_Parser.create_dict_of_streets(street, name_city)
             building_dict['building'] = building
