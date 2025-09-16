@@ -54,13 +54,9 @@ class Manager:
         self.get_kafka_connection()
         self.get_mongo_connection()
 
-#for
+
     def run(self):
         self.get_html()
         self.save_html_to_file()
         self.save_in_mongo_and_get_id()
         self.send_to_kafka()
-
-a = Manager()
-a.setup()
-a.run()

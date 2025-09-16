@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
 
-from streets_building import building_Parser
+from src.services.expander.streets_building import building_Parser
 from src.shared.dal.kafka import Kafka
 from src.shared.dal.mongo2 import MongoDAL
 

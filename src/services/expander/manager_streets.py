@@ -2,19 +2,15 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
 
-from streets_parser import CityParser
+from src.services.expander.streets_parser import CityParser
 from src.shared.dal.kafka import Kafka
 from src.shared.dal.mongo2 import MongoDAL
-from manager_buildings import Manager_buildings
+from src.services.expander.manager_buildings import Manager_buildings
 
 
 load_dotenv()
 
 class Manager:
-
-    def __init__(self):
-        self.manager_buildings = Manager_buildings()
-        self.manager_buildings.setup()
 
     def run(self):
         for consumer in self.kafka.sub():
@@ -24,6 +20,9 @@ class Manager:
 
 
     def setup(self):
+
+        self.manager_buildings = Manager_buildings()
+        self.manager_buildings.setup()
         self.kafka = Kafka("parser-service")
         self.kafka.create_producer()
         self.kafka.create_consumer(os.getenv("topic-to-parser-streets", "topic-to-parser-streets"))
@@ -63,8 +62,3 @@ class Manager:
             os.makedirs(folder_path)
         city = self.mongodb.get_file(_id, f"{folder_path}/data.html")
         return city
-
-
-a = Manager()
-a.setup()
-a.run()
