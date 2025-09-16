@@ -60,3 +60,7 @@ class Manager:
         self.save_html_to_file()
         self.save_in_mongo_and_get_id()
         self.send_to_kafka()
+
+o1 = Manager()
+o1.setup()
+o1.run()

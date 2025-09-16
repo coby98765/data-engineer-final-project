@@ -96,3 +96,24 @@ class MongoDAL:
             logger.error("Error retrieving document (ID=%s): %s", e)
             return []
 
+
+    def get_streets_by_city(self, collection: str,field: str) -> dict:
+        """
+        Retrieve a simple document from a collection by id.
+        Returns the document or {} if not found.
+        """
+        try:
+            cursor = self.db[collection].find().sort(field,1)
+            result = {}
+            for doc in cursor:
+                key = doc[field]
+                result.setdefault(key, []).append(doc)
+            if result:
+                logger.info("Document retrieved successfully. ID=%s", result)
+                return result
+            else:
+                logger.warning("Document not found. ID=%s", result)
+                return []
+        except errors.PyMongoError as e:
+            logger.error("Error retrieving document (ID=%s): %s", e)
+            return []

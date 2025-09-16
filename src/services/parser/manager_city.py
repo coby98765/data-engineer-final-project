@@ -13,6 +13,7 @@ class Manager:
 
     def run(self):
         for consumer in self.kafka.sub():
+            print(consumer)
             self.get_from_mongo_by_id(consumer)
             html = self.read_files("tmp/data.html")
             self.start_city(html)
@@ -38,8 +39,7 @@ class Manager:
                 self.send_link_to_kafka(row.pop("link"))
             else:
                 row.pop("link")
-        docs = {"city" : all_city}
-        self.saving_in_mongodb(docs)
+        self.saving_in_mongodb(all_city)
 
 
     def send_link_to_kafka(self, link):
@@ -61,3 +61,6 @@ class Manager:
             os.makedirs(folder_path)
         city = self.mongodb.get_file(_id, f"{folder_path}/data.html")
         return city
+o1 = Manager()
+o1.setup()
+o1.run()

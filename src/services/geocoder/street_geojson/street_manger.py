@@ -8,10 +8,15 @@ class StreetsGeojson:
     def __init__(self):
         self.paint_street = PaintStreet()
 
-    def manage_all_streets(self,cities_streets):
-        all_streets = self.paint_street.painting(cities_streets)
-        return all_streets
+    def manage_all_streets(self,kafka_sub,mongo):
+        for street_msg in kafka_sub:
+            streets_doc = mongo.get_streets_by_city("collection-to-doc-street", street_msg["streets"])
+
+            all_streets = self.paint_street.painting(streets_doc)
+            mongo.insert_document("collection-street-geojson",all_streets)
+            filename = "streets_colored.geojson"
+            with open(filename, "w", encoding="utf-8") as f:
+                json.dump(all_streets, f, ensure_ascii=False, indent=2)
 
 o1 = StreetsGeojson()
 bu = [{"אור יהודה":[{'street': 'אבי ואביב', 'status': 'yes'}, {'street': 'אבנר', 'city': 'אור יהודה', 'status': 'yes'}, {'street': 'שדרות מנחם בגין', 'city': 'אור יהודה','status':'no'}]}]
-o1.manage_all_streets(bu)
