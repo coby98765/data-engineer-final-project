@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scraper
+  namespace: ravkav-geo-dev
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: scraper } }
+  template:
+    metadata: { labels: { app: scraper } }
+    spec:
+      containers:
+        - name: scraper
+          image: ghcr.io/your-org/scraper:dev
+          ports: [ { containerPort: 8000 } ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scraper
+  namespace: ravkav-geo-dev
+spec:
+  selector: { app: scraper }
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000

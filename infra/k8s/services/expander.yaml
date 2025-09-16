@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expander
+  namespace: ravkav-geo-dev
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: expander } }
+  template:
+    metadata: { labels: { app: expander } }
+    spec:
+      containers:
+        - name: expander
+          image: ghcr.io/your-org/expander:dev
+          ports: [ { containerPort: 8000 } ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: expander
+  namespace: ravkav-geo-dev
+spec:
+  selector: { app: expander }
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: indexer
+  namespace: ravkav-geo-dev
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: indexer } }
+  template:
+    metadata: { labels: { app: indexer } }
+    spec:
+      containers:
+        - name: indexer
+          image: ghcr.io/your-org/indexer:dev
+          ports: [ { containerPort: 8000 } ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: indexer
+  namespace: ravkav-geo-dev
+spec:
+  selector: { app: indexer }
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
