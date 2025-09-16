@@ -21,16 +21,17 @@ class Manager_buildings:
 
     def start_building(self, street, name_city):
         all_building = building_Parser.parse(street, name_city)
-        self.saving_in_mongodb(all_building)
+        if all_building:
+            self.saving_in_mongodb(all_building)
 
 
     def saving_in_mongodb(self, doc):
-        collection = os.getenv("collection-to-doc-building")
-        id = self.mongodb.insert_document(collection, doc)
-        self.send_id_mongo_to_geo(id)
+        collection = os.getenv("collection-to-doc-building", "collection-to-doc-building")
+        _id = self.mongodb.insert_document(collection, doc)
+        self.send_id_mongo_to_geo(_id)
 
     def send_id_mongo_to_geo(self, link):
-        self.kafka.producer(link, os.getenv("topic-to-geo-building", "topic-to-geo-building"))
+        self.kafka.pub(link, os.getenv("topic-to-geo-building", "topic-to-geo-building"))
 
 
     def get_from_mongo_by_id(self, _id):

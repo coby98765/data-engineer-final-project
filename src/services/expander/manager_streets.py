@@ -14,10 +14,12 @@ class Manager:
 
     def __init__(self):
         self.manager_buildings = Manager_buildings()
+        self.manager_buildings.setup()
 
     def run(self):
         for consumer in self.kafka.sub():
-            html = self.get_from_mongo_by_id(consumer["_id"])
+            self.get_from_mongo_by_id(consumer)
+            html = self.read_files("tmp/data.html")
             self.start_city(html)
 
 
@@ -28,23 +30,30 @@ class Manager:
         self.mongodb = MongoDAL()
         self.parser = CityParser()
 
+    def read_files(self, path):
+        with open(path, "r",  encoding="utf-8") as file:
+            file = file.read()
+        return file
+
 
     def start_city(self, html):
         all_streets = self.parser.parse(html)
         list_of_buildings = []
         for street in all_streets:
             if street["status"] == "partial":
-                list_of_buildings.append(self.manager_buildings.start_city(street, street["city"]))
+                list_of_buildings.append(self.manager_buildings.start_building(street["street_html"], street["city"]))
         self.saving_in_mongodb(all_streets)
 
 
     def saving_in_mongodb(self, doc):
-        collection = os.getenv("collection-to-doc-streets")
-        id = self.mongodb.insert_document(collection, doc)
-        self.send_id_mongo_to_geo(id)
+        for street in doc:
+            street.pop("street_html")
+        collection = os.getenv("collection-to-doc-streets", "collection-to-doc-streets")
+        _id = self.mongodb.insert_document(collection, doc)
+        self.send_id_mongo_to_geo(_id)
 
     def send_id_mongo_to_geo(self, link):
-        self.kafka.producer(link, os.getenv("topic-to-geo-streets", "topic-to-geo-streets"))
+        self.kafka.pub(link, os.getenv("topic-to-geo-streets", "topic-to-geo-streets"))
 
 
     def get_from_mongo_by_id(self, _id):
