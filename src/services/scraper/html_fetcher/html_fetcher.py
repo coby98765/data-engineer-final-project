@@ -1,3 +1,5 @@
+import os
+
 import requests
 
 
@@ -15,5 +17,7 @@ class HtmlFetcher:
             return None
 
     def save_html_to_file(self, html_content):
+        if not os.path.exists('tmp'):
+            os.mkdir('tmp')
         with open("tmp/data.html", "w", encoding="utf-8") as file:
             file.write(html_content)
