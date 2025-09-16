@@ -43,7 +43,7 @@ class MongoDAL:
             logger.error("Error retrieving file (ID=%s): %s", file_id, e)
 
 
-    def insert_document(self, collection: str, data: dict) -> str:
+    def insert_document(self, collection: str, data: dict) -> list:
         """
         Insert a simple document into a collection (without GridFS).
         Returns the inserted document id.
@@ -51,10 +51,11 @@ class MongoDAL:
         try:
             result = self.db[collection].insert_many(data)
             logger.info("Document inserted successfully. ID=%s", result)
-            return str(result)
+            ids_as_strings = [str(_id) for _id in result.inserted_ids]
+            return ids_as_strings
         except errors.PyMongoError as e:
             logger.error("Error inserting document: %s", e)
-            return ""
+            return []
 
 
     def get_document(self, collection: str, doc_id: str) -> dict:

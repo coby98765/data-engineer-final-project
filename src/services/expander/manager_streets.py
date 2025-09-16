@@ -49,8 +49,9 @@ class Manager:
         for street in doc:
             street.pop("street_html")
         collection = os.getenv("collection-to-doc-streets", "collection-to-doc-streets")
-        _id = self.mongodb.insert_document(collection, doc)
-        self.send_id_mongo_to_geo(_id)
+        list_id = self.mongodb.insert_document(collection, doc)
+        docs = {"streets" : list_id}
+        self.send_id_mongo_to_geo(docs)
 
     def send_id_mongo_to_geo(self, link):
         self.kafka.pub(link, os.getenv("topic-to-geo-streets", "topic-to-geo-streets"))

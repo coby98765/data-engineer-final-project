@@ -1,4 +1,4 @@
-from html_fetcher.html_fetcher import HtmlFetcher
+from src.services.scraper.html_fetcher.html_fetcher import HtmlFetcher
 from src.shared.dal.mongo2 import MongoDAL
 from  src.shared.dal.kafka import Kafka
 from src.shared.dal.kafka import Kafka
