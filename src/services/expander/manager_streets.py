@@ -14,6 +14,7 @@ class Manager:
 
     def run(self):
         for consumer in self.kafka.sub():
+            print(consumer)
             self.get_from_mongo_by_id(consumer)
             html = self.read_files("tmp/data.html")
             self.start_city(html)

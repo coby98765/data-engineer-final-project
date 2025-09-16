@@ -12,6 +12,7 @@ load_dotenv()
 class Manager:
 
     def run(self):
+        print("parser running...")
         for consumer in self.kafka.sub():
             self.get_from_mongo_by_id(consumer)
             html = self.read_files("tmp/data.html")
