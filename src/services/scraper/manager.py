@@ -1,4 +1,4 @@
-from html_fetcher.html_fetcher import HtmlFetcher
+from src.services.scraper.html_fetcher.html_fetcher import HtmlFetcher
 from src.shared.dal.mongo2 import MongoDAL
 from  src.shared.dal.kafka import Kafka
 from src.shared.dal.kafka import Kafka
@@ -77,12 +77,9 @@ class Manager:
     This function manages the entire service by receiving the html from the url and saving the information to a file,
      then saving it to MongoDB and sending the unique identifier to Kafka.
     """
+
     def run(self):
         self.get_html()
         self.save_html_to_file()
         self.save_in_mongo_and_get_id()
         self.send_to_kafka()
-
-a = Manager()
-a.setup()
-a.run()

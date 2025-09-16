@@ -100,6 +100,6 @@ class Manager:
             self.run_from_sub(msg)
 
 
-a=Manager()
-a.setup()
-a.run()
+# a=Manager()
+# a.setup()
+# a.run()

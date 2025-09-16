@@ -47,4 +47,3 @@ class MongoDAL:
             raise
         finally:
             client.close()
-
