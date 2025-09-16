@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     INDEXER_URL: str = "http://indexer:8000"
 
     class Config :
-        env_file =  "../../../.env"
+        env_file = "../../../.env.example"
 
     # class Config:
     #     env_file = "../../../.env.local"
