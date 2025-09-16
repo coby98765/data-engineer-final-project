@@ -38,8 +38,7 @@ class Manager:
                 self.send_link_to_kafka(row.pop("link"))
             else:
                 row.pop("link")
-        docs = {"city" : all_city}
-        self.saving_in_mongodb(docs)
+        self.saving_in_mongodb(all_city)
 
 
     def send_link_to_kafka(self, link):
