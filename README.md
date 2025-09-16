@@ -13,3 +13,8 @@ Monorepo לפרויקט Data Engineering:
 - `make dev-down`
 - `make test`
 - `make fmt` / `make lint`
+
+## Collaborators
+[![Contributors](https://contrib.rocks/image?repo=coby98765/data-engineer-final-project)](https://github.com/coby98765/data-engineer-final-project/graphs/contributors)
+
+Made with [contrib.rocks](https://contrib.rocks).
