@@ -15,7 +15,8 @@ class Manager:
         # Main loop to consume messages from Kafka
         print("parser running...")
         for consumer in self.kafka.sub():
-            # Get HTML file from MongoDB by ID
+            print(consumer)
+
             self.get_from_mongo_by_id(consumer)
             html = self.read_files("tmp/data.html")
             # Parse cities and process them
@@ -49,7 +50,7 @@ class Manager:
             else:
                 # Remove link if not needed
                 row.pop("link")
-        # Save processed city data to MongoDB
+
         self.saving_in_mongodb(all_city)
 
 
@@ -77,3 +78,6 @@ class Manager:
             os.makedirs(folder_path)
         city = self.mongodb.get_file(_id, f"{folder_path}/data.html")
         return city
+o1 = Manager()
+o1.setup()
+o1.run()
