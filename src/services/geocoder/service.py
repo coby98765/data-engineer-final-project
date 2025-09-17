@@ -29,7 +29,7 @@ class Operating:
         # print(self.kafka_city.sub())
         # self.city_to_geo.manage_all_cities(self.kafka_city.sub(),self.mongo)
         # print("city geomap complete.")
-        self.street_to_geo.manage_all_streets(self.kafka_street.sub(), self.mongo)
+        self.street_to_geo.manage_all_streets(self.kafka_street, self.mongo)
         print("street geomap complete.")
 
         self.building_to_geo.manage_all_buildings(self.kafka_building.sub(), self.mongo)

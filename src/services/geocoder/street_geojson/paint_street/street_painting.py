@@ -7,29 +7,30 @@ import pandas as pd
 class PaintStreet:
     def __init__(self):
         self.COLOR_MAP = os.getenv("COLOR_MAP",{"yes":"green","no":"red","partial":"orange"})
-    def painting(self,streets_in_cities):
-        all_streets = gpd.GeoDataFrame()
-        print(streets_in_cities)
-        for city_name in streets_in_cities:
-            streets_list = city[city_name]
-            print(streets_list)
-            print(city_name)
-            G = ox.graph_from_place(f"{city_name}", network_type='drive')
-            edges = ox.graph_to_gdfs(G, nodes=False, edges=True)
 
-            for s in streets_list:
-                street = edges[edges["name"] == s["street"]]
-                print(street,type(street))
-                if street.empty:
-                    print("Street not found.")
-                else:
-                    street['color'] = self.COLOR_MAP[s["status"]]
-                    street['city'] = city_name
 
-                    all_streets = gpd.GeoDataFrame(
-                        pd.concat([all_streets, street], ignore_index=True)
-                    )
+    def painting(self,streets_in_cities:dict):
+        city_streets = gpd.GeoDataFrame()
+        keys = list(streets_in_cities.keys())
+        print(streets_in_cities[keys[0]])
 
-        # המרה ל־dict שמוכן לשמירה במונגו
-        geojson_dict = json.loads(all_streets.to_json())
-        return geojson_dict
+        G = ox.graph_from_place(f"{keys[0]}", network_type='drive')
+        edges = ox.graph_to_gdfs(G, nodes=False, edges=True)
+        print("g:",G)
+        print("edges:",edges)
+
+        for s in streets_in_cities[keys[0]]:
+            street = edges[edges["name"] == s["street"]]
+            print(street,type(street))
+            if street.empty:
+                print(f"Street: {s["street"]}, not found.")
+            else:
+                street['color'] = self.COLOR_MAP[s["status"]]
+                street['city'] = keys[0]
+
+                city_streets = gpd.GeoDataFrame(
+                    pd.concat([city_streets, street], ignore_index=True)
+                )
+        city_streets = city_streets.dropna(axis=1, how="all")
+
+        return city_streets
