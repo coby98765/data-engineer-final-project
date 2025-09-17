@@ -96,3 +96,62 @@ class MongoDAL:
             logger.error("Error retrieving document (ID=%s): %s", e)
             return []
 
+    def get_documents_grouped_by_city(self, collection: str, id_list: list) -> dict:
+        """
+        Retrieve documents by a list of IDs and group them by city.
+        Returns a dict where key = city, value = list of documents.
+        """
+        try:
+            object_ids = [ObjectId(id_str) for id_str in id_list]
+            documents = self.db[collection].find({"_id": {"$in": object_ids}})
+            docs_list = list(documents)
+
+            result = {}
+            for doc in docs_list:
+                city = doc.get('city', 'Unknown')
+                # ניצור dict חדש בלי את ה _id אם רוצים
+                doc_data = {k: v for k, v in doc.items() if k != '_id'}
+                result.setdefault(city, []).append(doc_data)
+
+            if result:
+                logger.info("Documents grouped by city successfully.")
+            else:
+                logger.warning("No documents found.")
+            return result
+
+        except errors.PyMongoError as e:
+            logger.error("Error retrieving documents: %s", e)
+            return {}
+
+
+    def get_streets_by_city(self, collection: str,field: str) -> dict:
+        """
+        Retrieve a simple document from a collection by id.
+        Returns the document or {} if not found.
+        """
+        try:
+            cursor = self.db[collection].find().sort(field,1)
+            result = {}
+            for doc in cursor:
+                key = doc[field]
+                result.setdefault(key, []).append(doc)
+            if result:
+                logger.info("Document retrieved successfully. ID=%s", result)
+                return result
+            else:
+                logger.warning("Document not found. ID=%s", result)
+                return []
+        except errors.PyMongoError as e:
+            logger.error("Error retrieving document (ID=%s): %s", e)
+            return []
+
+    def insert_one_document(self, collection: str, data: dict) -> list:
+        """
+        Insert a simple document into a collection (without GridFS).
+        Returns the inserted document id.
+        """
+        try:
+            result = self.db[collection].insert_one(data)
+            logger.info("Document inserted successfully. ID=%s", result)
+        except errors.PyMongoError as e:
+            logger.error("Error inserting document: %s", e)
