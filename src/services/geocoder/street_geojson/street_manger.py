@@ -1,3 +1,5 @@
+import os.path
+
 from src.services.geocoder.city_geojson.paint_city.city_painting import PaintCity
 import json
 import geopandas as gpd
@@ -12,25 +14,21 @@ class StreetsGeojson:
     def manage_all_streets(self,kafka,mongo):
         all_streets = gpd.GeoDataFrame()
         for street_msg in kafka.sub():
+            #print(street_msg)
             try:
                 print(len(street_msg["streets"]))
                 streets_doc = mongo.get_documents_grouped_by_city("collection-to-doc-streets", street_msg["streets"])
-                print(streets_doc)
+                #print(streets_doc)
                 city_streets = self.paint_street.painting(streets_doc)
                 all_streets = gpd.GeoDataFrame(
                     pd.concat([all_streets, city_streets], ignore_index=True)
                 )
-                new_data = json.loads(all_streets.to_json())
+                new_data = all_streets.to_json()
+
                 self.update_geojson(r"C:\Users\HOME\PycharmProjects\data-engineer-final-project\geojsons\streets_colored.geojson",new_data)
             except Exception as e:
-                print(e)
+                print("Error:",e)
                 continue
-
-        geojson_dict = json.loads(all_streets.to_json())
-        #mongo.insert_document("collection-street-geojson",all_streets)
-        filename = r"C:\Users\HOME\PycharmProjects\data-engineer-final-project\geojsons\streets_colored.geojson"
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(geojson_dict, f, ensure_ascii=False, indent=2)
 
     @staticmethod
     def update_geojson(file_path: str, new_data: dict):
@@ -40,19 +38,25 @@ class StreetsGeojson:
         :param file_path: קובץ GeoJSON קיים
         :param new_data: מילון של נתונים להוספה ב-properties של כל Feature
         """
-        # טוען את הקובץ
-        with open(file_path, "r", encoding="utf-8") as f:
-            geojson_data = json.load(f)
+        try:
+            print(new_data)
+            if os.path.exists(file_path):
 
-        # מוסיף את הנתונים החדשים לכל Feature
-        for feature in geojson_data.get("features", []):
-            feature.setdefault("properties", {})
-            feature["properties"].update(new_data)
+                # טוען את הקובץ
+                with open(file_path, "r", encoding="utf-8") as f:
+                    geojson_data = json.load(f)
 
-        # שומר חזרה על אותו קובץ
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(geojson_data, f, ensure_ascii=False, indent=2)
+                # מוסיף את הנתונים החדשים לכל Feature
+                for feature in geojson_data.get("features", []):
+                    feature.setdefault("properties", {})
+                    feature["properties"].update(new_data)
 
+            # שומר חזרה על אותו קובץ
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(geojson_data, f, ensure_ascii=False, indent=2)
+            print("new_data:\n\n", new_data)
+        except Exception as e:
+            print("create geojson error:\n\n",e)
     # דוגמה לשימוש:
     # update_geojson("streets.geojson", {"city": "Bnei Brak", "source": "my_script"})
 
